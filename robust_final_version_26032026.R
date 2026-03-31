@@ -53,7 +53,6 @@ names(genomes) <- sub(" .*", "", names(genomes))
 g4$seqnames    <- sub(" .*", "", g4$seqnames)
 
 # --- Validation checks ---
-
 missing_in_aln <- setdiff(unique(g4$seqnames), names(aln))
 if (length(missing_in_aln) > 0) {
   warning(length(missing_in_aln), " G4 seqname(s) not found in alignment — they will be dropped:\n  ",
