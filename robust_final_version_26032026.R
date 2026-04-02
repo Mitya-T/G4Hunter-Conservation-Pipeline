@@ -3,7 +3,8 @@
 # Robust final version
 ############################
 
-setwd('/home/dimitri/cedarHazaraToscana/others/ebola/testAlternativeApproach/')
+# setwd('/home/dimitri/cedarHazaraToscana/others/ebola/testAlternativeApproach/')
+setwd('/home/dimitri/cedarHazaraToscana/others/nipah/complete_genomes/')
 getwd()
 
 ############################
@@ -24,15 +25,18 @@ message("=== Loading data ===")
 
 # align all genomes first using mafft
 # Aligned genomes (MAFFT output)
-aln <- readDNAStringSet("all_genomes.aln")
+# aln <- readDNAStringSet("all_genomes.aln")  # for EBOLA
+aln <- readDNAStringSet("all_Nipah_genomes.aln")  # for NIPAH
 
 # this is an original .fasta file that contains all the COMPLETE GENOMES
 # Original (unaligned) genomes — used for sequence extraction
-genomes <- readDNAStringSet("zaire_ebola_completeGnms.fa")
+# genomes <- readDNAStringSet("zaire_ebola_completeGnms.fa")  # -= EBOLA =-
+genomes <- readDNAStringSet("nipah_completeGnms.fa")  # -= NIPAH =-
 
 # this is a table that is created using the G4hunter per genome
 # G4Hunter output (skip header comment line)
-g4 <- read.csv("zaire_genome_G4Hunter.csv", skip = 1)
+# g4 <- read.csv("zaire_genome_G4Hunter.csv", skip = 1) # -= EBOLA =-
+g4 <- read.csv("nipah_genome_G4Hunter.csv", skip = 1) # -= NIPAH =-
 
 message("Loaded: ", length(aln), " aligned sequences")
 message("Loaded: ", length(genomes), " original genomes")
@@ -45,7 +49,8 @@ message("Loaded: ", nrow(g4), " G4Hunter hits")
 message("\n=== Cleaning sequence names ===")
 
 # Strip path-like prefix added by G4Hunter (e.g. "completeGnms.fa_ACC")
-g4$seqnames <- sub("^zaire_ebola_completeGnms\\.fa_", "", g4$seqnames)
+# g4$seqnames <- sub("^zaire_ebola_completeGnms\\.fa_", "", g4$seqnames)  # -= EBOLA =-
+g4$seqnames <- sub("^nipah_completeGnms\\.fa_", "", g4$seqnames)    # -= NIPAH =-
 
 # Keep only the accession (everything before the first space) in all three objects
 names(aln)     <- sub(" .*", "", names(aln))
@@ -76,8 +81,8 @@ if (length(aln_not_in_g4) > 0) {
 
 message("\n=== Filtering by G4Hunter score ===")
 
-# Retain only high-confidence hits (|score| >= 1.5 is a common threshold)
-G4_SCORE_THRESHOLD <- 1.5
+# Retain only high-confidence hits (|score| >= 1.5 is a common threshold, 1.4 - also ok)
+G4_SCORE_THRESHOLD <- 1.3
 
 n_before <- nrow(g4)
 g4 <- g4 %>% filter(abs(score) >= G4_SCORE_THRESHOLD)
